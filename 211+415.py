@@ -101,9 +101,7 @@ def doubleInt(g, n):
 ################################################
 # Simpel liv-død model - 211 passiv med u17 dødeligheder fra PFA tekniske grundlag
 ################################################
-
-
-def passiv211a(g,n,år, r):
+def passiv211(g,n,år, r):
   """[Find the expected contributions to "opsat livrente"]
   Args:
       g ([int]): [alder ved første udbetaling]
@@ -119,4 +117,28 @@ def passiv211a(g,n,år, r):
     return np.exp(-laplace(g,tau,f1))
   return laplace(g,n,f2)
 
-print("Passiv 211: ", passiv211a(g=64,n=110,år=2045, r=0))
+print("Passiv 211: ", passiv211(g=64,n=110,år=2045, r=0))
+################################################
+# Simpel liv-død model - 215 passiv med u17 dødeligheder fra PFA tekniske grundlag
+################################################
+def passiv215(tegning, u,n,år, r):
+    """[Find the expected contributions to "opsat livrente"]
+    Args:
+      tegning ([int]): [alder ved tegningstidspunkt]
+      u ([int]): [første udbetalingsdato]
+      n ([int]): [sidste udbetalingsdato]
+      år ([int]): year of udbetalingsstart
+      r ([float]): [interest rate minus "sikkerhedstillæg"]
+    """
+    t = tegning-u #lower limit for integral (indicator)
+    upper = n-tegning #upper limit for integral
+    def f1(tau):
+        # Inner integrand
+        return (r+muAd(tau+tegning,år+tau))
+    def f2(s):
+        #second integrand
+        return np.exp(-laplace(t,s,f1))
+    return laplace(t,upper,f2)
+
+
+print("Passiv 215: ", passiv215(tegning=39,u=39, n=64, år=2020, r=0))
